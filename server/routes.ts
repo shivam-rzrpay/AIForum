@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import multer from "multer";
@@ -12,6 +12,7 @@ import { processDocument, getContextForQuery, deleteDocument } from "./chromadb"
 import { handleSlackEvent, isBotMentioned, extractQuery } from "./slack";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import { 
   insertUserSchema, 
   insertPostSchema, 
@@ -61,6 +62,19 @@ export async function registerRoutes(app: express.Express): Promise<Server> {
     resave: false,
     saveUninitialized: true,
     cookie: { secure: process.env.NODE_ENV === 'production' }
+  }));
+
+  // Set up Python backend proxy (port 5001)
+  app.use(['/api/python'], createProxyMiddleware({
+    target: 'http://localhost:5001',
+    changeOrigin: true,
+    pathRewrite: {
+      '^/api/python': '/api', // Remove the '/python' prefix when forwarding
+    },
+    onError: (err, req, res) => {
+      console.error('Proxy error:', err);
+      res.status(500).json({ message: 'Python backend service unavailable' });
+    }
   }));
 
   // Authentication middleware
