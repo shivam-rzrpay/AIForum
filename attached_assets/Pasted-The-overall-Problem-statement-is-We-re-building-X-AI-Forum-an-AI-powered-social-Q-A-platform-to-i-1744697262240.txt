@@ -1,0 +1,23 @@
+The overall Problem statement is :
+We're building X-AI-Forum, an AI-powered social Q&A platform to instantly answer internal questions (about projects, policies, acronyms). It solves the massive time drain employees face searching scattered information, providing quick AI & crowdsourced answers directly in their workflow (Web/Slack).
+The Functionalities we want to have :
+1. We need to build a X-AI-Forum which is a social AI powered FAQ forum, where the users in my org can login and can access the forum.
+2. The user can 4 subsections in the Forum Homepage :
+a. Technical Product Support Forum
+b. Product Ideas Forum
+c. General Queries Forum
+d. HR and Onboarding Forum
+Each of the above Forum is a Public Forum where the user can post questions that there will be an AI generated response and also other Users can respond
+3. There can be a Private AI Assistant Chat window as well, for each of the above forum where questions and follow ups can just be asked with the AI only with no User Post to be made.
+4. For Each of the Forum we will form different - different vector embeddings using amazon.titan-embed-text-v2:0 embeddings where there will be different embedding scripts for different documents that will be uploaded for each of the different Forums.  The goal here is to have customised and best AI generated results for each use cases. The documents that is uploaded for Technical Product Support Forum are Tech Specs, PRDs, Runbooks etc. The Documents uploaded for Product Idea forum will also be Tech Specs, PRDs, Runbooks etc but for this the embeddings and LLMs should be formed such that the results are generated for providing a generic idea for a product which also mention the idea that has already implemented through previous tech docs etc and take inspiration from that, whereas the Technical Product Support Forum document should be embedded and LLMs are fine tuned in such a way that they tell us about the Product already made and that exists.
+The General Queries Forum documents will be some Org level document, Structures, Whom to reach out etc. and finally the HR Forum will have HR and Benefits related documents.
+5. The LLM model to be used is from the config :
+AWS_REGION=ap-south-1
+AWS_PROFILE=AWS_101860328116_bedrock-101860328116
+claude Sonnet 3.5 v2: us.anthropic.claude-3-5-sonnet-20241022-v2:0
+6. The Vector Embeddings can be stored in ChromaDB
+7. Explore the possibility of usage of FAISS
+8. There should be databases for User, Posts, and other relevant tables
+9. We have also made a Slack App : X-AI-Forum which will kind of Provide the Functionality of Answering the User Query on Slack by mentioning @X-AI-Forum and there will be AI generated response for that on the slack. The Slack App is still yet to be added in the workspace, the Socket token for the slack App is with me and can be given in config file, the SLACK_BOT_TOKEN
+5:32
+Tech Document : https://docs.google.com/document/d/1U2U9JYdyckniYopzbqVQpTPax4gvaLQ66YEEXI5bwgE/edit?usp=sharing (edited) 
