@@ -1,3 +1,4 @@
 #!/bin/bash
-cd python_backend
+# This script starts the Python backend service
+echo "Starting Python backend service..."
 python run.py

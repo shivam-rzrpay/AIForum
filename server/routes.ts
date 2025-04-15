@@ -65,16 +65,24 @@ export async function registerRoutes(app: express.Express): Promise<Server> {
   }));
 
   // Set up Python backend proxy (port 5001)
-  app.use(['/api/python'], createProxyMiddleware({
+  app.use(['/api/python', '/api/documents', '/api/ai-chats'], createProxyMiddleware({
     target: 'http://localhost:5001',
     changeOrigin: true,
     pathRewrite: {
       '^/api/python': '/api', // Remove the '/python' prefix when forwarding
+      // Other paths pass through as-is
     },
-    onError: (err, req, res) => {
-      console.error('Proxy error:', err);
-      res.status(500).json({ message: 'Python backend service unavailable' });
-    }
+    logLevel: 'debug',
+    // Type assertion to avoid TypeScript error
+    ...(({
+      onProxyReq: (proxyReq, req, res) => {
+        console.log(`Proxying ${req.method} ${req.url} -> ${proxyReq.path}`);
+      },
+      onError: (err, req, res) => {
+        console.error('Proxy error:', err);
+        res.status(500).json({ message: 'Python backend service unavailable', error: err.message });
+      }
+    } as any))
   }));
 
   // Authentication middleware
