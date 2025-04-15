@@ -11,9 +11,20 @@ from botocore.exceptions import ClientError
 logger = logging.getLogger('bedrock-service')
 
 # AWS Bedrock models and region
-CLAUDE_MODEL = "anthropic.claude-3-5-sonnet-20241022-v2:0"
+# Try different models in order of preference
+CLAUDE_MODELS = [
+    os.environ.get('CLAUDE_MODEL_ID'),  # Custom model ID if provided in env vars
+    "anthropic.claude-3-sonnet-20240229-v1:0",
+    "anthropic.claude-3-haiku-20240307-v1:0", 
+    "anthropic.claude-instant-v1",
+    "anthropic.claude-v2"
+]
+# Filter out None values and get the first available model
+CLAUDE_MODEL = next((model for model in CLAUDE_MODELS if model), "anthropic.claude-v2")
 TITAN_EMBEDDING_MODEL = "amazon.titan-embed-text-v2:0"
-AWS_REGION = "ap-south-1"  # Mumbai region
+AWS_REGION = os.environ.get("AWS_REGION", "ap-south-1")  # Get region from env vars or use Mumbai
+
+logger.info(f"Using Claude model: {CLAUDE_MODEL}")
 
 class BedrockService:
     def __init__(self, region=AWS_REGION):

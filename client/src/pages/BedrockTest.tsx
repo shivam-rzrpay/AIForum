@@ -95,9 +95,15 @@ export default function BedrockTest() {
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Access Denied</AlertTitle>
           <AlertDescription>
-            Your AWS credentials don't have permission to use the Claude model. 
+            Your AWS credentials don't have permission to use the Claude models. 
             Please check your AWS Bedrock permissions and ensure you have access to 
-            the "anthropic.claude-3-5-sonnet-20241022-v2:0" model.
+            at least one of the Claude models in your AWS region.
+            <ul className="mt-2 list-disc pl-5">
+              <li>Verify your AWS credentials are set in Secrets</li>
+              <li>Make sure your IAM role has Bedrock access permissions</li>
+              <li>Check if Claude models are available in your AWS region</li>
+              <li>Consider setting a custom CLAUDE_MODEL_ID in Secrets</li>
+            </ul>
           </AlertDescription>
         </Alert>
       );
