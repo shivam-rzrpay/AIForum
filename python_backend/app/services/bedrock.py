@@ -18,16 +18,13 @@ except Exception as e:
     logger.error(f"Failed to initialize AWS Bedrock client: {str(e)}")
     bedrock_runtime = None
 
-# Claude model IDs with fallbacks
+# Claude model ID - using specifically the model you have access to
 CLAUDE_MODELS = [
     os.environ.get('CLAUDE_MODEL_ID'),  # Custom model ID if provided in env vars
-    "anthropic.claude-3-sonnet-20240229-v1:0",
-    "anthropic.claude-3-haiku-20240307-v1:0",
-    "anthropic.claude-instant-v1",
-    "anthropic.claude-v2"
+    "anthropic.claude-3-5-sonnet-20241022-v2:0"  # Your accessible model
 ]
 # Filter out None values and get the first available model
-CLAUDE_MODEL_ID = next((model for model in CLAUDE_MODELS if model), "anthropic.claude-v2")
+CLAUDE_MODEL_ID = next((model for model in CLAUDE_MODELS if model), "anthropic.claude-3-5-sonnet-20241022-v2:0")
 TITAN_EMBEDDING_MODEL_ID = "amazon.titan-embed-text-v2:0"
 
 logger.info(f"Using Claude model: {CLAUDE_MODEL_ID}")

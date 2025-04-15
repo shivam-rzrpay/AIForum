@@ -3,18 +3,14 @@ import { BedrockRuntimeClient, InvokeModelCommand } from "@aws-sdk/client-bedroc
 // AWS Bedrock client setup
 const REGION = process.env.AWS_REGION || "ap-south-1";
 
-// Set up model ID with fallbacks to try different models
-// The code will try these models in order until one works
+// Set up model ID to use only the model you have access to
 const CLAUDE_MODELS = [
   process.env.CLAUDE_MODEL_ID, // Custom model ID if provided
-  "anthropic.claude-3-sonnet-20240229-v1:0",
-  "anthropic.claude-3-haiku-20240307-v1:0",
-  "anthropic.claude-instant-v1",
-  "anthropic.claude-v2"
+  "anthropic.claude-3-5-sonnet-20241022-v2:0" // Your accessible model
 ];
 
 // Get first non-undefined model from the list
-const MODEL_ID = CLAUDE_MODELS.find(model => model !== undefined) || "anthropic.claude-v2";
+const MODEL_ID = CLAUDE_MODELS.find(model => model !== undefined) || "anthropic.claude-3-5-sonnet-20241022-v2:0";
 
 // Create a client with credentials from environment variables
 const bedrockClient = new BedrockRuntimeClient({ 
