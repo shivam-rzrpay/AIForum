@@ -1,7 +1,7 @@
 
 // Simple script to test AWS credentials with Bedrock
-const { BedrockRuntimeClient, ListFoundationModelsCommand } = require("@aws-sdk/client-bedrock-runtime");
-const { STSClient, GetCallerIdentityCommand } = require("@aws-sdk/client-sts");
+import { BedrockRuntimeClient } from "@aws-sdk/client-bedrock-runtime";
+import { STSClient, GetCallerIdentityCommand } from "@aws-sdk/client-sts";
 
 async function testAWSCredentials() {
   console.log("Testing AWS credentials...");
