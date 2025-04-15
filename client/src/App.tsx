@@ -13,6 +13,7 @@ import Register from "@/pages/Register";
 import Forum from "@/pages/Forum";
 import AiAssistant from "@/pages/AiAssistant";
 import DocumentManagement from "@/pages/DocumentManagement";
+import BedrockTest from "@/pages/BedrockTest";
 
 // Components
 import { ThemeProvider } from "@/components/ui/theme-provider";
@@ -26,6 +27,7 @@ function Router() {
       <Route path="/forums/:category" component={Forum} />
       <Route path="/ai-assistant/:category" component={AiAssistant} />
       <Route path="/documents" component={DocumentManagement} />
+      <Route path="/test-bedrock" component={BedrockTest} />
       <Route component={NotFound} />
     </Switch>
   );

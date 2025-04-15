@@ -106,6 +106,11 @@ export default function Sidebar() {
       path: '/documents',
     },
     { 
+      name: 'Bedrock Test', 
+      icon: 'robot', 
+      path: '/test-bedrock',
+    },
+    { 
       name: 'Settings', 
       icon: 'cog', 
       path: '/settings',

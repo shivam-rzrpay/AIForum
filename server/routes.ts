@@ -65,12 +65,11 @@ export async function registerRoutes(app: express.Express): Promise<Server> {
   }));
 
   // Set up Python backend proxy (port 5001)
-  app.use(['/api/python', '/api/documents', '/api/ai-chats'], createProxyMiddleware({
+  const pythonBackendProxy = createProxyMiddleware({
     target: 'http://localhost:5001',
     changeOrigin: true,
     pathRewrite: {
       '^/api/python': '/api', // Remove the '/python' prefix when forwarding
-      // Other paths pass through as-is
     },
     logLevel: 'debug',
     // Type assertion to avoid TypeScript error
@@ -83,7 +82,63 @@ export async function registerRoutes(app: express.Express): Promise<Server> {
         res.status(500).json({ message: 'Python backend service unavailable', error: err.message });
       }
     } as any))
-  }));
+  });
+  
+  // Apply proxy to the specific routes
+  app.use('/api/python', pythonBackendProxy);
+  app.use('/api/documents', pythonBackendProxy);
+  app.use('/api/ai-chats', pythonBackendProxy);
+  app.use('/api/uploads', pythonBackendProxy);
+  
+  // Add test endpoints for AWS Bedrock Claude integration
+  app.post('/api/test-bedrock', async (req, res) => {
+    try {
+      const { query } = req.body;
+      
+      if (!query) {
+        return res.status(400).json({ message: "Query parameter is required" });
+      }
+      
+      console.log(`Testing AWS Bedrock Claude with query: ${query}`);
+      
+      const response = await generateForumAIResponse(
+        query,
+        [],
+        'general'
+      );
+      
+      res.json({ response });
+    } catch (error) {
+      console.error('Error testing AWS Bedrock:', error);
+      res.status(500).json({ 
+        message: "Error testing AWS Bedrock API", 
+        error: error.message
+      });
+    }
+  });
+  
+  // Add a simple GET test endpoint for AWS Bedrock Claude
+  app.get('/api/test-bedrock-simple', async (req, res) => {
+    try {
+      const query = req.query.q as string || "Hello, what can you tell me about AWS Bedrock?";
+      
+      console.log(`Simple test for AWS Bedrock Claude with query: ${query}`);
+      
+      const response = await generateForumAIResponse(
+        query,
+        [],
+        'general'
+      );
+      
+      res.json({ query, response });
+    } catch (error) {
+      console.error('Error testing AWS Bedrock:', error);
+      res.status(500).json({ 
+        message: "Error testing AWS Bedrock API", 
+        error: error.message
+      });
+    }
+  });
 
   // Authentication middleware
   const isAuthenticated = (req: Request, res: Response, next: Function) => {
@@ -96,8 +151,11 @@ export async function registerRoutes(app: express.Express): Promise<Server> {
   // Create HTTP server
   const httpServer = createServer(app);
 
-  // Set up WebSocket server for real-time chat
-  const wss = new WebSocketServer({ server: httpServer });
+  // Set up WebSocket server for real-time chat with a specific path
+  const wss = new WebSocketServer({ 
+    server: httpServer,
+    path: '/ws'  // Use a specific path to avoid conflicts with Vite's HMR
+  });
 
   wss.on('connection', (ws) => {
     ws.on('message', async (message) => {

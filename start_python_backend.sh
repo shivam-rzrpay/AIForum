@@ -1,4 +1,5 @@
 #!/bin/bash
-# This script starts the Python backend service
-echo "Starting Python backend service..."
-python run.py
+
+# Start the Python backend in the background
+echo "Starting X-AI Forum Python Backend..."
+python python_backend_app.py
