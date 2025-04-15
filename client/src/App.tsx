@@ -28,6 +28,7 @@ function Router() {
       <Route path="/ai-assistant/:category" component={AiAssistant} />
       <Route path="/documents" component={DocumentManagement} />
       <Route path="/test-bedrock" component={BedrockTest} />
+      <Route path="/bedrock-test" component={BedrockTest} />
       <Route component={NotFound} />
     </Switch>
   );
