@@ -2,8 +2,8 @@ import { BedrockRuntimeClient, InvokeModelCommand } from "@aws-sdk/client-bedroc
 
 // AWS Bedrock client setup
 const REGION = process.env.AWS_REGION || "ap-south-1";
-// Using exact model specified by user that they have access to
-const MODEL_ID = "anthropic.claude-3-5-sonnet-20241022-v2:0";
+// Try more commonly available models
+const MODEL_ID = "anthropic.claude-3-haiku-20240307-v1:0"; // Using a model that's more likely to be available
 
 // Create a client with credentials from environment variables
 const bedrockClient = new BedrockRuntimeClient({ 
@@ -132,7 +132,7 @@ export async function createTitanEmbedding(text: string): Promise<number[]> {
     };
 
     const command = new InvokeModelCommand({
-      modelId: "amazon.titan-embed-text-v2:0",
+      modelId: "amazon.titan-embed-text-v1",
       contentType: "application/json",
       accept: "application/json",
       body: JSON.stringify(payload),
