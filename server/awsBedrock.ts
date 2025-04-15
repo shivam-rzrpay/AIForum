@@ -3,7 +3,7 @@ import { BedrockRuntimeClient, InvokeModelCommand } from "@aws-sdk/client-bedroc
 // AWS Bedrock client setup
 const REGION = process.env.AWS_REGION || "ap-south-1";
 
-// Set up model ID to use only the model you have access to
+// Set up model ID to use only the models you have access to
 const CLAUDE_MODELS = [
   process.env.CLAUDE_MODEL_ID, // Custom model ID if provided
   "anthropic.claude-3-5-sonnet-20241022-v2:0" // Your accessible model

@@ -27,6 +27,9 @@ CLAUDE_MODELS = [
 CLAUDE_MODEL_ID = next((model for model in CLAUDE_MODELS if model), "anthropic.claude-3-5-sonnet-20241022-v2:0")
 TITAN_EMBEDDING_MODEL_ID = "amazon.titan-embed-text-v2:0"
 
+# Set the region to ap-south-1
+os.environ['AWS_REGION'] = os.environ.get('AWS_REGION', 'ap-south-1')
+
 logger.info(f"Using Claude model: {CLAUDE_MODEL_ID}")
 
 def generate_claude_response(messages, system_prompt=None):
