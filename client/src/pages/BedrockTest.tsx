@@ -24,13 +24,13 @@ export default function BedrockTest() {
     try {
       // Use the simple GET endpoint for a quick test
       const testResponse = await fetch(`/api/test-bedrock-simple?q=test`);
-      
+
       if (testResponse.ok) {
         setServiceStatus("available");
       } else {
         const errorData = await testResponse.json();
         console.error("Bedrock test failed:", errorData);
-        
+
         // Check if this is an access error
         if (errorData.error && errorData.error.includes("not authorized to perform")) {
           setAccessError(true);
@@ -47,18 +47,18 @@ export default function BedrockTest() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!query.trim()) {
       setError("Please enter a query");
       return;
     }
-    
+
     setLoading(true);
     setError("");
-    
+
     try {
       console.log("Sending query to Bedrock API:", query);
-      
+
       const result = await fetch("/api/test-bedrock", {
         method: "POST",
         body: JSON.stringify({ query }),
@@ -66,9 +66,9 @@ export default function BedrockTest() {
           "Content-Type": "application/json"
         }
       });
-      
+
       const data = await result.json();
-      
+
       if (!result.ok) {
         if (data.error && data.error.includes("not authorized")) {
           setAccessError(true);
@@ -76,7 +76,7 @@ export default function BedrockTest() {
         }
         throw new Error(data.message || `Error ${result.status}: ${result.statusText}`);
       }
-      
+
       setResponse(data.response);
       console.log("Received response:", data.response);
     } catch (err: any) {
@@ -135,10 +135,10 @@ export default function BedrockTest() {
   return (
     <div className="container max-w-4xl mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6 text-center">AWS Bedrock API Test</h1>
-      
+
       {renderServiceStatus()}
       {renderAccessError()}
-      
+
       <Card className="mb-8">
         <CardHeader>
           <CardTitle>Test AWS Bedrock Claude Integration</CardTitle>
@@ -175,7 +175,7 @@ export default function BedrockTest() {
           </CardFooter>
         </form>
       </Card>
-      
+
       {response && (
         <Card>
           <CardHeader>

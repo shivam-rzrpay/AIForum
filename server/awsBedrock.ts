@@ -59,7 +59,7 @@ export async function generateClaudeResponse(
 
     const response = await bedrockClient.send(command);
     const responseBody = JSON.parse(new TextDecoder().decode(response.body));
-    
+
     return responseBody.content[0].text;
   } catch (error: any) {
     console.error("Error generating Claude response:", error);
@@ -140,7 +140,7 @@ export async function createTitanEmbedding(text: string): Promise<number[]> {
 
     const response = await bedrockClient.send(command);
     const responseBody = JSON.parse(new TextDecoder().decode(response.body));
-    
+
     return responseBody.embedding;
   } catch (error: any) {
     console.error("Error creating Titan embedding:", error);
