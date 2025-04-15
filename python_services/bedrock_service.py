@@ -1,6 +1,6 @@
 """
 AWS Bedrock service for AI functionality.
-Uses Claude 3 Sonnet for text generation and Titan for embeddings.
+Uses Claude 3.5 Sonnet for text generation and Titan for embeddings.
 """
 import os
 import json
@@ -11,7 +11,7 @@ from botocore.exceptions import ClientError
 logger = logging.getLogger('bedrock-service')
 
 # AWS Bedrock models and region
-CLAUDE_MODEL = "anthropic.claude-3-sonnet-20240229-v1:0"
+CLAUDE_MODEL = "anthropic.claude-3-5-sonnet-20241022-v2:0"
 TITAN_EMBEDDING_MODEL = "amazon.titan-embed-text-v2:0"
 AWS_REGION = "ap-south-1"  # Mumbai region
 
