@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { apiRequest } from "@/lib/queryClient";
 
 export default function BedrockTest() {
   const [query, setQuery] = useState("");
@@ -22,6 +21,8 @@ export default function BedrockTest() {
     setError("");
     
     try {
+      console.log("Sending query to Bedrock API:", query);
+      
       const result = await fetch("/api/test-bedrock", {
         method: "POST",
         body: JSON.stringify({ query }),
@@ -36,12 +37,49 @@ export default function BedrockTest() {
       
       const data = await result.json();
       setResponse(data.response);
+      console.log("Received response:", data.response);
     } catch (err) {
       console.error("Error testing AWS Bedrock:", err);
       setError("Failed to get response from AWS Bedrock API");
     } finally {
       setLoading(false);
     }
+  };
+
+  // Alternative direct query handler (in case the form submit isn't working)
+  const handleDirectQuery = () => {
+    if (!query.trim()) {
+      setError("Please enter a query");
+      return;
+    }
+    
+    setLoading(true);
+    setError("");
+    
+    fetch("/api/test-bedrock", {
+      method: "POST",
+      body: JSON.stringify({ query }),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      setResponse(data.response);
+      console.log("Received response:", data.response);
+    })
+    .catch(err => {
+      console.error("Error testing AWS Bedrock (direct):", err);
+      setError("Failed to get response from AWS Bedrock API");
+    })
+    .finally(() => {
+      setLoading(false);
+    });
   };
 
   return (
@@ -65,9 +103,17 @@ export default function BedrockTest() {
             />
             {error && <p className="text-red-500 mt-2">{error}</p>}
           </CardContent>
-          <CardFooter>
+          <CardFooter className="flex gap-2">
             <Button type="submit" disabled={loading}>
-              {loading ? "Generating response..." : "Submit Query"}
+              {loading ? "Generating response..." : "Submit Query (Form)"}
+            </Button>
+            <Button 
+              type="button" 
+              onClick={handleDirectQuery} 
+              disabled={loading}
+              variant="outline"
+            >
+              Try Direct Query
             </Button>
           </CardFooter>
         </form>
