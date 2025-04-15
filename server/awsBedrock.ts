@@ -2,15 +2,17 @@ import { BedrockRuntimeClient, InvokeModelCommand } from "@aws-sdk/client-bedroc
 
 // AWS Bedrock client setup
 const REGION = process.env.AWS_REGION || "ap-south-1";
-const PROFILE = process.env.AWS_PROFILE || "AWS_101860328116_bedrock-101860328116";
-const MODEL_ID = "anthropic.claude-3-sonnet-20241022-v2:0";
+const MODEL_ID = "anthropic.claude-3-5-sonnet-20241022-v2:0";
 
-// Create a client with credentials
+// Create a client with credentials from environment variables
 const bedrockClient = new BedrockRuntimeClient({ 
   region: REGION,
+  // Use environment variables without fallbacks 
+  // (the application should fail appropriately if credentials aren't provided)
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ""
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+    sessionToken: process.env.AWS_SESSION_TOKEN
   }
 });
 
@@ -58,9 +60,9 @@ export async function generateClaudeResponse(
     const responseBody = JSON.parse(new TextDecoder().decode(response.body));
     
     return responseBody.content[0].text;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error generating Claude response:", error);
-    throw new Error(`Failed to generate AI response: ${error.message}`);
+    throw new Error(`Failed to generate AI response: ${error.message || "Unknown error"}`);
   }
 }
 
@@ -139,8 +141,8 @@ export async function createTitanEmbedding(text: string): Promise<number[]> {
     const responseBody = JSON.parse(new TextDecoder().decode(response.body));
     
     return responseBody.embedding;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating Titan embedding:", error);
-    throw new Error(`Failed to create embedding: ${error.message}`);
+    throw new Error(`Failed to create embedding: ${error.message || "Unknown error"}`);
   }
 }

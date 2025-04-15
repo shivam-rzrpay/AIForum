@@ -1,11 +1,16 @@
 import { WebClient } from "@slack/web-api";
 
-if (!process.env.SLACK_BOT_TOKEN) {
+// Default Slack credentials
+const SLACK_BOT_TOKEN = process.env.SLACK_BOT_TOKEN || "xoxb-2244923219-8740304219751-weEyOBi24L8uY1v0HTLmc6V3";
+const SLACK_CHANNEL_ID = process.env.SLACK_CHANNEL_ID || "CNXASR0H3";
+
+// Check if Slack credentials are available
+if (!SLACK_BOT_TOKEN) {
   console.warn("SLACK_BOT_TOKEN environment variable is not set. Slack integration will not work.");
 }
 
 // Initialize Slack Web Client
-const slack = new WebClient(process.env.SLACK_BOT_TOKEN || "");
+const slack = new WebClient(SLACK_BOT_TOKEN);
 
 /**
  * Send a response to a query in Slack
@@ -16,18 +21,18 @@ const slack = new WebClient(process.env.SLACK_BOT_TOKEN || "");
  */
 export async function sendSlackMessage(channel: string, text: string, threadTs?: string) {
   try {
-    if (!process.env.SLACK_BOT_TOKEN) {
-      throw new Error("SLACK_BOT_TOKEN environment variable is not set");
+    if (!SLACK_BOT_TOKEN) {
+      throw new Error("SLACK_BOT_TOKEN is not set");
     }
     
     const result = await slack.chat.postMessage({
-      channel,
+      channel: channel || SLACK_CHANNEL_ID, // Use provided channel or default
       text,
       thread_ts: threadTs,
     });
     
     return result;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error sending Slack message:", error);
     throw new Error(`Failed to send Slack message: ${error.message}`);
   }
@@ -91,7 +96,7 @@ export async function handleSlackEvent(event: any, generateAIResponse: Function)
         await sendSlackMessage(channel, response, threadTs);
       }
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error handling Slack event:", error);
   }
 }
