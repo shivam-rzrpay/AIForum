@@ -2,7 +2,8 @@ import { BedrockRuntimeClient, InvokeModelCommand } from "@aws-sdk/client-bedroc
 
 // AWS Bedrock client setup
 const REGION = process.env.AWS_REGION || "ap-south-1";
-const MODEL_ID = "anthropic.claude-3-5-sonnet-20241022-v2:0";
+// Try a different Claude model that might be accessible
+const MODEL_ID = "anthropic.claude-3-sonnet-20240229-v1:0";
 
 // Create a client with credentials from environment variables
 const bedrockClient = new BedrockRuntimeClient({ 
